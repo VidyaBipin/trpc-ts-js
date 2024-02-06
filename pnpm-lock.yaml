@@ -119,8 +119,8 @@ importers:
         specifier: ^0.36.0
         version: 0.36.0(rollup@4.9.5)(typescript@5.3.3)
       superjson:
-        specifier: ^1.12.4
-        version: 1.12.4
+        specifier: ^2.0.0
+        version: 2.2.1
       ts-prune:
         specifier: ^0.10.3
         version: 0.10.3
@@ -1573,8 +1573,8 @@ importers:
         specifier: ^4.9.5
         version: 4.9.5
       superjson:
-        specifier: ^1.12.4
-        version: 1.12.4
+        specifier: ^2.0.0
+        version: 2.2.1
       superstruct:
         specifier: ^1.0.0
         version: 1.0.3
@@ -21302,6 +21302,13 @@ packages:
   /superjson@1.12.4:
     resolution: {integrity: sha512-vkpPQAxdCg9SLfPv5GPC5fnGrui/WryktoN9O5+Zif/14QIMjw+RITf/5LbBh+9QpBFb3KNvJth+puz2H8o6GQ==}
     engines: {node: '>=10'}
+    dependencies:
+      copy-anything: 3.0.2
+    dev: false
+
+  /superjson@2.2.1:
+    resolution: {integrity: sha512-8iGv75BYOa0xRJHK5vRLEjE2H/i4lulTjzpUXic3Eg8akftYjkmQDa8JARQ42rlczXyFR3IeRoeFCc7RxHsYZA==}
+    engines: {node: '>=16'}
     dependencies:
       copy-anything: 3.0.2
 
