@@ -14,16 +14,20 @@ import type {
   APIGatewayProxyStructuredResultV2,
   Context as APIGWContext,
 } from 'aws-lambda';
-import type { AnyRouter, inferRouterContext } from '../../@trpc/server'; // import @trpc/server
-
-// @trpc/server
-import { TRPCError } from '../../@trpc/server';
 import type {
   HTTPHeaders,
   OnErrorFunction,
   ResponseMetaFn,
   TRPCRequestInfo,
-} from '../../@trpc/server/http';
+} from '../../@trpc/server/http.ts';
+import type {
+  AnyRouter,
+  inferRouterContext,
+} from '../../@trpc/server/index.ts';
+// import @trpc/server
+
+// @trpc/server
+import { TRPCError } from '../../@trpc/server/index.ts';
 
 export type APIGatewayEvent = APIGatewayProxyEvent | APIGatewayProxyEventV2;
 export type APIGatewayResult =

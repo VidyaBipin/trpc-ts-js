@@ -1,12 +1,13 @@
 // @trpc/server
-import type { AnyRouter } from '../../../@trpc/server';
+
 // @trpc/server/http
-import type { BaseContentTypeHandler } from '../../../@trpc/server/http';
+import type { BaseContentTypeHandler } from '../../../@trpc/server/http.ts';
+import type { AnyRouter } from '../../../@trpc/server/index.ts';
 import type {
   NodeHTTPRequest,
   NodeHTTPRequestHandlerOptions,
   NodeHTTPResponse,
-} from '../types';
+} from '../types.ts';
 
 export interface NodeHTTPContentTypeHandler<
   TRequest extends NodeHTTPRequest,
