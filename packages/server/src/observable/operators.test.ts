@@ -5,7 +5,7 @@ import { map, share } from './operators';
 interface SubscriptionEvents<TOutput> {
   data: (data: TOutput) => void;
 }
-
+/* eslint-disable @typescript-eslint/method-signature-style */
 declare interface CustomEventEmitter<TOutput> {
   on<U extends keyof SubscriptionEvents<TOutput>>(
     event: U,
@@ -22,6 +22,8 @@ declare interface CustomEventEmitter<TOutput> {
     ...args: Parameters<SubscriptionEvents<TOutput>[U]>
   ): boolean;
 }
+/* eslint-enable @typescript-eslint/method-signature-style */
+
 class CustomEventEmitter<TOutput>
   extends EventEmitter
   implements CustomEventEmitter<TOutput> {}

@@ -149,7 +149,7 @@ export interface ProcedureBuilder<
    * Add an input parser to the procedure.
    * @link https://trpc.io/docs/v11/server/validators
    */
-  input<$Parser extends Parser>(
+  input: <$Parser extends Parser>(
     schema: TInputOut extends UnsetMarker
       ? $Parser
       : inferParser<$Parser>['out'] extends Record<string, unknown> | undefined
@@ -161,7 +161,7 @@ export interface ProcedureBuilder<
           : $Parser
         : TypeError<'All input parsers did not resolve to an object'>
       : TypeError<'All input parsers did not resolve to an object'>,
-  ): ProcedureBuilder<
+  ) => ProcedureBuilder<
     TContext,
     TMeta,
     TContextOverrides,
@@ -174,9 +174,9 @@ export interface ProcedureBuilder<
    * Add an output parser to the procedure.
    * @link https://trpc.io/docs/v11/server/validators
    */
-  output<$Parser extends Parser>(
+  output: <$Parser extends Parser>(
     schema: $Parser,
-  ): ProcedureBuilder<
+  ) => ProcedureBuilder<
     TContext,
     TMeta,
     TContextOverrides,
@@ -189,9 +189,9 @@ export interface ProcedureBuilder<
    * Add a meta data to the procedure.
    * @link https://trpc.io/docs/v11/server/metadata
    */
-  meta(
+  meta: (
     meta: TMeta,
-  ): ProcedureBuilder<
+  ) => ProcedureBuilder<
     TContext,
     TMeta,
     TContextOverrides,
@@ -204,6 +204,8 @@ export interface ProcedureBuilder<
    * Add a middleware to the procedure.
    * @link https://trpc.io/docs/v11/server/middlewares
    */
+  // FIXME: this should be short-hand style
+  // eslint-disable-next-line @typescript-eslint/method-signature-style
   use<$ContextOverridesOut>(
     fn:
       | MiddlewareBuilder<
@@ -232,7 +234,7 @@ export interface ProcedureBuilder<
   /**
    * Combine two procedure builders
    */
-  unstable_concat<
+  unstable_concat: <
     $Context,
     $Meta,
     $ContextOverrides,
@@ -254,7 +256,7 @@ export interface ProcedureBuilder<
           >
         : TypeError<'Meta mismatch'>
       : TypeError<'Context mismatch'>,
-  ): ProcedureBuilder<
+  ) => ProcedureBuilder<
     TContext,
     TMeta,
     Overwrite<TContextOverrides, $ContextOverrides>,
@@ -267,7 +269,7 @@ export interface ProcedureBuilder<
    * Query procedure
    * @link https://trpc.io/docs/v11/concepts#vocabulary
    */
-  query<$Output>(
+  query: <$Output>(
     resolver: ProcedureResolver<
       TContext,
       TMeta,
@@ -276,7 +278,7 @@ export interface ProcedureBuilder<
       TOutputIn,
       $Output
     >,
-  ): QueryProcedure<{
+  ) => QueryProcedure<{
     input: DefaultValue<TInputIn, void>;
     output: DefaultValue<TOutputOut, $Output>;
   }>;
@@ -285,7 +287,7 @@ export interface ProcedureBuilder<
    * Mutation procedure
    * @link https://trpc.io/docs/v11/concepts#vocabulary
    */
-  mutation<$Output>(
+  mutation: <$Output>(
     resolver: ProcedureResolver<
       TContext,
       TMeta,
@@ -294,7 +296,7 @@ export interface ProcedureBuilder<
       TOutputIn,
       $Output
     >,
-  ): MutationProcedure<{
+  ) => MutationProcedure<{
     input: DefaultValue<TInputIn, void>;
     output: DefaultValue<TOutputOut, $Output>;
   }>;
@@ -303,7 +305,7 @@ export interface ProcedureBuilder<
    * Subscription procedure
    * @link https://trpc.io/docs/v11/concepts#vocabulary
    */
-  subscription<$Output>(
+  subscription: <$Output>(
     resolver: ProcedureResolver<
       TContext,
       TMeta,
@@ -312,7 +314,7 @@ export interface ProcedureBuilder<
       TOutputIn,
       $Output
     >,
-  ): SubscriptionProcedure<{
+  ) => SubscriptionProcedure<{
     input: DefaultValue<TInputIn, void>;
     output: DefaultValue<TOutputOut, inferObservableValue<$Output>>;
   }>;

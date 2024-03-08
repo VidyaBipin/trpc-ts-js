@@ -49,6 +49,8 @@ export interface MiddlewareBuilder<
   /**
    * Create a new builder based on the current middleware builder
    */
+  // FIXME: this should be short-hand style
+  // eslint-disable-next-line @typescript-eslint/method-signature-style
   unstable_pipe<$ContextOverridesOut>(
     fn:
       | MiddlewareFunction<

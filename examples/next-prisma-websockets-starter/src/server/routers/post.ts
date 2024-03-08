@@ -13,6 +13,7 @@ interface MyEvents {
   add: (data: Post) => void;
   isTypingUpdate: () => void;
 }
+/* eslint-disable @typescript-eslint/method-signature-style */
 declare interface MyEventEmitter {
   on<TEv extends keyof MyEvents>(event: TEv, listener: MyEvents[TEv]): this;
   off<TEv extends keyof MyEvents>(event: TEv, listener: MyEvents[TEv]): this;
@@ -22,6 +23,7 @@ declare interface MyEventEmitter {
     ...args: Parameters<MyEvents[TEv]>
   ): boolean;
 }
+/* eslint-enable @typescript-eslint/method-signature-style */
 
 class MyEventEmitter extends EventEmitter {}
 
