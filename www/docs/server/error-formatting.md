@@ -7,9 +7,9 @@ slug: /server/error-formatting
 
 The error formatting in your router will be inferred all the way to your client (&&nbsp;React&nbsp;components)
 
-## Usage example highlighted
+## Usage example: Zod validation error
 
-### Adding custom formatting
+### Server-side
 
 ```ts title='server.ts'
 import { initTRPC } from '@trpc/server';
@@ -49,6 +49,40 @@ export function MyComponent() {
   }
   return <>[...]</>;
 }
+```
+
+## Usage example: Prisma conflict
+
+In this one we even change http status code of the response from 500 to 409
+
+### Server-side
+
+```ts title='server.ts'
+import { initTRPC } from '@trpc/server';
+import { Prisma } from '@prisma/client'
+
+export const t = initTRPC.context<Context>().create({
+  errorFormatter(opts) {
+    const { shape, error } = opts;
+    if (
+      error.cause instanceof Prisma.PrismaClientKnownRequestError &&
+      error.cause.code === 'P2002' // Unique Constraint failed: https://www.prisma.io/docs/reference/api-reference/error-reference#p2002
+    ) {
+      return {
+        ...shape,
+        data: {
+          ...shape.data,
+          httpStatus: 409,
+        },
+        code: 409,
+        message: `Operation ${shape.data.path} failed: same value already exists for field "${error.cause.meta?.target}"`,
+      };
+    }
+
+    // rest of your formatter for all other cases
+    return shape;
+  },
+});
 ```
 
 ## All properties sent to `errorFormatter()`
