@@ -95,10 +95,10 @@ export type AnyProcedureBuilder = ProcedureBuilder<
   any,
   any,
   any,
-  any,
-  any,
-  any,
-  any
+  UnsetMarker,
+  UnsetMarker,
+  UnsetMarker,
+  UnsetMarker
 >;
 
 /**
@@ -362,9 +362,9 @@ export function createBuilder<TContext, TMeta>(
   const builder: AnyProcedureBuilder = {
     _def,
     input(input) {
-      const parser = getParseFn(input as Parser);
+      const parser = getParseFn(input);
       return createNewBuilder(_def, {
-        inputs: [input as Parser],
+        inputs: [input],
         middlewares: [createInputMiddleware(parser)],
       });
     },
