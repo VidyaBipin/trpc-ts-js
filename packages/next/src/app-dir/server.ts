@@ -1,4 +1,5 @@
 /// <reference types="next" />
+
 import {
   clientCallTypeToProcedureType,
   createTRPCUntypedClient,
@@ -30,31 +31,44 @@ import { cache } from 'react';
 import { formDataToObject } from './formDataToObject';
 import type {
   ActionHandlerDef,
-  CreateTRPCNextAppRouterOptions,
+  CreateTRPCNextAppRouterServerOptions,
   inferActionDef,
 } from './shared';
 import { generateCacheTag, isFormData } from './shared';
-import type { NextAppDirDecorateRouterRecord } from './types';
+import type {
+  NextAppDirDecorateRouterRecord,
+  NextAppDirRuntime,
+} from './types';
 
 // ts-prune-ignore-next
 export function experimental_createTRPCNextAppDirServer<
   TRouter extends AnyRouter,
->(opts: CreateTRPCNextAppRouterOptions<TRouter>) {
+>(opts: CreateTRPCNextAppRouterServerOptions<TRouter>) {
   const getClient = cache(() => {
     const config = opts.config();
     return createTRPCUntypedClient(config);
   });
-
-  return createRecursiveProxy((callOpts) => {
+  return createRecursiveProxy(async (callOpts) => {
+    const config = opts.config();
     // lazily initialize client
     const client = getClient();
+    const ctx = await config.createContext();
+
+    const runtime = client.runtime as NextAppDirRuntime<TRouter>;
+    runtime.ctx = ctx;
+    runtime.cacheTagSeparators = config.contextSelector?.(ctx, callOpts) ?? [];
 
     const pathCopy = [...callOpts.path];
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const action = pathCopy.pop()!;
     const procedurePath = pathCopy.join('.');
     const procedureType = clientCallTypeToProcedureType(action);
-    const cacheTag = generateCacheTag(procedurePath, callOpts.args[0]);
+
+    const cacheTag = await generateCacheTag(
+      procedurePath,
+      callOpts.args[0],
+      runtime.cacheTagSeparators,
+    );
 
     if (action === 'revalidate') {
       revalidateTag(cacheTag);
