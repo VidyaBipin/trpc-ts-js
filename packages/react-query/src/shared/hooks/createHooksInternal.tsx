@@ -8,7 +8,6 @@ import {
   useSuspenseQuery as __useSuspenseQuery,
   hashKey,
   skipToken,
-  useQueryClient,
 } from '@tanstack/react-query';
 import type { TRPCClientErrorLike } from '@trpc/client';
 import { createTRPCUntypedClient } from '@trpc/client';
@@ -264,8 +263,7 @@ export function createRootHooks<
     path: string[],
     opts?: UseTRPCMutationOptions<unknown, TError, unknown, unknown>,
   ): UseTRPCMutationResult<unknown, TError, unknown, unknown> {
-    const { client } = useContext();
-    const queryClient = useQueryClient();
+    const { client, queryClient } = useContext();
 
     const mutationKey = [path];
 
