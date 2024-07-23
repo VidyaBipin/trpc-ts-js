@@ -33,9 +33,13 @@ import {
 import { getQueryKeyInternal } from '../internals/getQueryKey';
 import type {
   CreateTRPCReactQueryClientConfig,
+  DefinedTRPCQueryOptionsIn,
+  DefinedTRPCQueryOptionsOut,
   ExtractCursorType,
   TRPCFetchInfiniteQueryOptions,
   TRPCFetchQueryOptions,
+  UndefinedTRPCQueryOptionsIn,
+  UndefinedTRPCQueryOptionsOut,
 } from '../shared';
 import { getQueryClient, getQueryType } from '../shared';
 
@@ -56,6 +60,27 @@ type DecorateProcedure<
   TRoot extends AnyRootTypes,
   TProcedure extends AnyProcedure,
 > = {
+  queryOptions(
+    input: inferProcedureInput<TProcedure>,
+    opts?: UndefinedTRPCQueryOptionsIn<
+      inferTransformedProcedureOutput<TRoot, TProcedure>,
+      TRPCClientError<TRoot>
+    >,
+  ): UndefinedTRPCQueryOptionsOut<
+    inferTransformedProcedureOutput<TRoot, TProcedure>,
+    TRPCClientError<TRoot>
+  >;
+  queryOptions(
+    input: inferProcedureInput<TProcedure>,
+    opts?: DefinedTRPCQueryOptionsIn<
+      inferTransformedProcedureOutput<TRoot, TProcedure>,
+      TRPCClientError<TRoot>
+    >,
+  ): DefinedTRPCQueryOptionsOut<
+    inferTransformedProcedureOutput<TRoot, TProcedure>,
+    TRPCClientError<TRoot>
+  >;
+
   /**
    * @link https://tanstack.com/query/v5/docs/framework/react/guides/prefetching
    */
@@ -209,6 +234,10 @@ export function createServerSideHelpers<TRouter extends AnyRouter>(
     );
 
     const helperMap: Record<keyof AnyDecoratedProcedure, () => unknown> = {
+      queryOptions: () => {
+        const args1 = args[1] as Maybe<any>;
+        return { ...args1, queryKey, queryFn };
+      },
       fetch: () => {
         const args1 = args[1] as Maybe<TRPCFetchQueryOptions<any, any>>;
         return queryClient.fetchQuery({ ...args1, queryKey, queryFn });

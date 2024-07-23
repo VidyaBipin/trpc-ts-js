@@ -35,6 +35,8 @@ import type {
   CreateClient,
   TRPCProvider,
   TRPCQueryOptions,
+  UndefinedUseTRPCUseQueryOptionsIn,
+  UndefinedUseTRPCUseQueryOptionsOut,
   UseTRPCInfiniteQueryOptions,
   UseTRPCInfiniteQueryResult,
   UseTRPCMutationOptions,
@@ -134,6 +136,42 @@ export function createRootHooks<
           ...opts,
         }
       : opts;
+  }
+
+  function useQueryOptions(
+    path: readonly string[],
+    input: unknown,
+    opts?: UndefinedUseTRPCUseQueryOptionsIn<unknown, unknown, TError>,
+  ): UndefinedUseTRPCUseQueryOptionsOut<unknown, unknown, TError> {
+    const { client } = useContext();
+
+    const queryKey = getQueryKeyInternal(path, input, 'query');
+    const isInputSkipToken = input === skipToken;
+
+    return {
+      ...opts,
+      trpc: useHookResult({ path }),
+      queryKey: queryKey as any,
+      queryFn: isInputSkipToken
+        ? input
+        : async (_queryFunctionContext) => {
+            const actualOpts = {
+              ...opts,
+              // trpc: {
+              //   ...opts?.trpc,
+              //   ...(queryFunctionContext.signal
+              //     ? { signal: queryFunctionContext.signal }
+              //     : {}),
+              // },
+            };
+
+            const result = await client.query(
+              ...getClientArgs(queryKey, actualOpts),
+            );
+
+            return result;
+          },
+    };
   }
 
   function useQuery(
@@ -536,6 +574,7 @@ export function createRootHooks<
     createClient,
     useContext,
     useUtils: useContext,
+    useQueryOptions,
     useQuery,
     useSuspenseQuery,
     useQueries,

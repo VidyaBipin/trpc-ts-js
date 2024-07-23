@@ -1,4 +1,6 @@
 import type {
+  DataTag,
+  DefinedInitialDataOptions,
   DefinedUseQueryResult,
   DehydratedState,
   InfiniteData,
@@ -6,6 +8,7 @@ import type {
   InitialDataFunction,
   QueryObserverSuccessResult,
   QueryOptions,
+  UndefinedInitialDataOptions,
   UseBaseQueryOptions,
   UseInfiniteQueryOptions,
   UseInfiniteQueryResult,
@@ -53,6 +56,32 @@ export interface TRPCUseQueryBaseOptions {
    * tRPC-related options
    */
   trpc?: TRPCReactRequestOptions;
+}
+
+export interface UndefinedUseTRPCUseQueryOptionsIn<TOutput, TData, TError>
+  extends DistributiveOmit<
+      UndefinedInitialDataOptions<TOutput, TError, TData, TRPCQueryKey>,
+      'queryKey' | 'queryFn' | 'queryHashFn' | 'queryHash'
+    >,
+    TRPCUseQueryBaseOptions {}
+
+export interface UndefinedUseTRPCUseQueryOptionsOut<TOutput, TData, TError>
+  extends UndefinedInitialDataOptions<TOutput, TError, TData, TRPCQueryKey>,
+    TRPCHookResult {
+  queryKey: DataTag<TRPCQueryKey, TData>;
+}
+
+export interface DefinedUseTRPCUseQueryOptionsIn<TOutput, TData, TError>
+  extends DistributiveOmit<
+      DefinedInitialDataOptions<TOutput, TError, TData, TRPCQueryKey>,
+      'queryKey' | 'queryFn' | 'queryHashFn' | 'queryHash'
+    >,
+    TRPCUseQueryBaseOptions {}
+
+export interface DefinedUseTRPCUseQueryOptionsOut<TOutput, TData, TError>
+  extends DefinedInitialDataOptions<TOutput, TError, TData, TRPCQueryKey>,
+    TRPCHookResult {
+  queryKey: DataTag<TRPCQueryKey, TData>;
 }
 
 export interface UseTRPCQueryOptions<

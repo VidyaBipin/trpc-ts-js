@@ -44,11 +44,38 @@ import {
 } from '../../internals/getQueryKey';
 import type { InferMutationOptions } from '../../utils/inferReactQueryProcedure';
 import type { ExtractCursorType } from '../hooks/types';
+import type {
+  DefinedTRPCQueryOptionsIn,
+  DefinedTRPCQueryOptionsOut,
+  UndefinedTRPCQueryOptionsIn,
+  UndefinedTRPCQueryOptionsOut,
+} from '../types';
 
 type DecorateQueryProcedure<
   TRoot extends AnyRootTypes,
   TProcedure extends AnyQueryProcedure,
 > = {
+  queryOptions(
+    input: inferProcedureInput<TProcedure>,
+    opts?: UndefinedTRPCQueryOptionsIn<
+      inferTransformedProcedureOutput<TRoot, TProcedure>,
+      TRPCClientError<TRoot>
+    >,
+  ): UndefinedTRPCQueryOptionsOut<
+    inferTransformedProcedureOutput<TRoot, TProcedure>,
+    TRPCClientError<TRoot>
+  >;
+  queryOptions(
+    input: inferProcedureInput<TProcedure>,
+    opts?: DefinedTRPCQueryOptionsIn<
+      inferTransformedProcedureOutput<TRoot, TProcedure>,
+      TRPCClientError<TRoot>
+    >,
+  ): DefinedTRPCQueryOptionsOut<
+    inferTransformedProcedureOutput<TRoot, TProcedure>,
+    TRPCClientError<TRoot>
+  >;
+
   /**
    * @link https://tanstack.com/query/v5/docs/reference/QueryClient#queryclientfetchquery
    */
@@ -308,6 +335,7 @@ export const getQueryType = (
   utilName: keyof AnyDecoratedProcedure,
 ): QueryType => {
   switch (utilName) {
+    case 'queryOptions':
     case 'fetch':
     case 'ensureData':
     case 'prefetch':
@@ -350,6 +378,7 @@ function createRecursiveUtilsProxy<TRouter extends AnyRouter>(
     const queryKey = getQueryKeyInternal(path, input, queryType);
 
     const contextMap: Record<keyof AnyDecoratedProcedure, () => unknown> = {
+      queryOptions: () => context.queryOptions(queryKey, ...args),
       /**
        * DecorateQueryProcedure
        */
